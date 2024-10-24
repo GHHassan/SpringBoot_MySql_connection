@@ -1,6 +1,6 @@
 package com.example.sqlconnect.shared.dto;
 
-import com.example.sqlconnect.model.User;
+import com.example.sqlconnect.model.classes.User;
 
 import java.io.Serial;
 import java.io.Serializable;

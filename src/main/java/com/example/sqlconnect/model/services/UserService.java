@@ -1,6 +1,6 @@
-package com.example.sqlconnect.services;
+package com.example.sqlconnect.model.services;
 
-import com.example.sqlconnect.model.response.UserError;
+import com.example.sqlconnect.model.classes.response.UserError;
 import com.example.sqlconnect.shared.dto.UserDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 

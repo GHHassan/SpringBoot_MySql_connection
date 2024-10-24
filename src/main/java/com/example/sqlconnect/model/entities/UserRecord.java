@@ -1,4 +1,4 @@
-package com.example.sqlconnect.io.entity;
+package com.example.sqlconnect.model.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

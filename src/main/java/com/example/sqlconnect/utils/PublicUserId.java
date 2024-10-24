@@ -1,4 +1,4 @@
-package com.example.sqlconnect.shared.utils;
+package com.example.sqlconnect.utils;
 
 import org.springframework.stereotype.Component;
 

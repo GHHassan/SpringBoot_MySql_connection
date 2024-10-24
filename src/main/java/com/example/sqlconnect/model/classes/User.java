@@ -1,4 +1,4 @@
-package com.example.sqlconnect.model;
+package com.example.sqlconnect.model.classes;
 
 public class User {
     private String  firstName;

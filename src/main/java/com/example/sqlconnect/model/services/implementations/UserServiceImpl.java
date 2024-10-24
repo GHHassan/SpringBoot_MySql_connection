@@ -1,11 +1,11 @@
-package com.example.sqlconnect.services.implementations;
+package com.example.sqlconnect.model.services.implementations;
 
-import com.example.sqlconnect.io.entity.UserRecord;
+import com.example.sqlconnect.model.entities.UserRecord;
 import com.example.sqlconnect.model.Repositories.UserRepository;
-import com.example.sqlconnect.model.response.UserError;
+import com.example.sqlconnect.model.classes.response.UserError;
 import com.example.sqlconnect.shared.dto.UserDto;
-import com.example.sqlconnect.services.UserService;
-import com.example.sqlconnect.shared.utils.PublicUserId;
+import com.example.sqlconnect.model.services.UserService;
+import com.example.sqlconnect.utils.PublicUserId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

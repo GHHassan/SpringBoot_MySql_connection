@@ -1,6 +1,6 @@
-package com.example.sqlconnect.model.requests;
+package com.example.sqlconnect.model.classes.requests;
 
-import com.example.sqlconnect.model.User;
+import com.example.sqlconnect.model.classes.User;
 
 public class UserRequest extends User {
 

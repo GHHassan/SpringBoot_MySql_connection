@@ -1,4 +1,4 @@
-package com.example.sqlconnect.model.response;
+package com.example.sqlconnect.model.classes.response;
 
 public class UserError extends Exception {
 

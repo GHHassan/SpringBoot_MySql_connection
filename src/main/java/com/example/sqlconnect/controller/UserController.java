@@ -1,9 +1,9 @@
 package com.example.sqlconnect.controller;//package com.example.sqlconnect.controller;
 
-import com.example.sqlconnect.model.requests.UserRequest;
-import com.example.sqlconnect.model.response.UserError;
-import com.example.sqlconnect.model.response.UserResponse;
-import com.example.sqlconnect.services.UserService;
+import com.example.sqlconnect.model.classes.requests.UserRequest;
+import com.example.sqlconnect.model.classes.response.UserError;
+import com.example.sqlconnect.model.classes.response.UserResponse;
+import com.example.sqlconnect.model.services.UserService;
 import com.example.sqlconnect.shared.dto.UserDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

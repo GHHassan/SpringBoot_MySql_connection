@@ -15,7 +15,7 @@
 //}
 package com.example.sqlconnect.model.Repositories;
 
-import com.example.sqlconnect.io.entity.UserRecord;
+import com.example.sqlconnect.model.entities.UserRecord;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
