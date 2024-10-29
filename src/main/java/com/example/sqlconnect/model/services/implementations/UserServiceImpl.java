@@ -1,10 +1,11 @@
 package com.example.sqlconnect.model.services.implementations;
 
-import com.example.sqlconnect.model.entities.UserRecord;
+import com.example.sqlconnect.model.dbManager.UserEntity;
 import com.example.sqlconnect.model.Repositories.UserRepository;
 import com.example.sqlconnect.model.classes.response.UserError;
 import com.example.sqlconnect.shared.dto.UserDto;
 import com.example.sqlconnect.model.services.UserService;
+import com.example.sqlconnect.utils.JwtUtil;
 import com.example.sqlconnect.utils.PublicUserId;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,37 +29,39 @@ public class UserServiceImpl implements UserService {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private final JwtUtil jwtUtil = new JwtUtil();
+
     @Override
     public UserDto createUser(UserDto userDto) throws UserError {
 
         if(userRepository.findByEmail(userDto.getEmail()) != null) throw new UserError("User already exists", "401");
 
-        UserRecord userRecord = new UserRecord();
+        UserEntity userEntity = new UserEntity();
         userDto.setEncryptedPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         userDto.setUserId(publicUserId.generateRandomId(30));
         System.out.println(userDto.toString());
-        BeanUtils.copyProperties(userDto, userRecord);
-        UserRecord createdUser = userRepository.save(userRecord);
+        BeanUtils.copyProperties(userDto, userEntity);
+        UserEntity createdUser = userRepository.save(userEntity);
         return userDto;
     }
 
     @Override
     public UserDto findByUserId(String userId) {
-        UserRecord userRecord = userRepository.findByUserId(userId);
-        if (userRecord == null) {
+        UserEntity userEntity = userRepository.findByUserId(userId);
+        if (userEntity == null) {
             return null; // Or throw a custom exception
         }
         UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userRecord, userDto);
+        BeanUtils.copyProperties(userEntity, userDto);
         return userDto;
     }
 
     @Override
     public List<UserDto> getUsers() {
-        List<UserRecord> users = (List<UserRecord>) userRepository.findAll();
-        return users.stream().map(userRecord -> {
+        List<UserEntity> users = (List<UserEntity>) userRepository.findAll();
+        return users.stream().map(userEntity -> {
             UserDto userDto = new UserDto();
-            BeanUtils.copyProperties(userRecord, userDto);
+            BeanUtils.copyProperties(userEntity, userDto);
             return userDto;
         }).collect(Collectors.toList());
     }
@@ -66,12 +69,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(String userId, UserDto userDto) throws UserError {
 
+        UserDto existingUser = findByUserId(userId);
         if(findByUserId(userId) == null) throw new UserError();
         //get current user for database
-        UserRecord userRecord = new UserRecord();
-        BeanUtils.copyProperties(userDto, userRecord);
+        UserEntity userEntity = new UserEntity();
+        BeanUtils.copyProperties(userDto, userEntity);
 
-        UserRecord recordedUser = userRepository.save(userRecord);
+        UserEntity recordedUser = userRepository.save(userEntity);
 
         UserDto returnedValue = new UserDto();
         BeanUtils.copyProperties(recordedUser, returnedValue);
@@ -80,7 +84,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public String authenticateUser(String username, String password) {
+        UserEntity user = userRepository.findByEmail(username);
+        if(user != null && bCryptPasswordEncoder.matches(password,
+                user.getEncryptedPassword())) {
+            return jwtUtil.generateToken(username);
+        }
+        return "userNotFound";
+    }
+
+    @Override
+    public Boolean validateUser(String username, String password) {
+        return null;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
         return null;
     }
 }

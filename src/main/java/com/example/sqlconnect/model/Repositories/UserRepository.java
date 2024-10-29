@@ -15,13 +15,13 @@
 //}
 package com.example.sqlconnect.model.Repositories;
 
-import com.example.sqlconnect.model.entities.UserRecord;
+import com.example.sqlconnect.model.dbManager.UserEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends CrudRepository<UserRecord, Long> {
-    UserRecord findByUserId(String user_id);  // Ensure this method
-    UserRecord findByEmail(String email);
+public interface UserRepository extends CrudRepository<UserEntity, Long> {
+    UserEntity findByUserId(String user_id);  // Ensure this method
+    UserEntity findByEmail(String email);
 }
 

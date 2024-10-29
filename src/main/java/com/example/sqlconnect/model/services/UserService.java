@@ -11,5 +11,8 @@ public interface UserService extends UserDetailsService {
     List<UserDto> getUsers();  // Assuming this returns all users
     UserDto findByUserId(String userId);
     UserDto updateUser(String userId, UserDto userDto) throws UserError;
+
+    String authenticateUser(String username, String password);
+    Boolean validateUser(String username, String password);
 }
 

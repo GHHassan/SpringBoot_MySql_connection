@@ -88,15 +88,16 @@ public class UserController {
     public ResponseEntity<UserResponse> updateUser(
             @RequestBody UserRequest userRequest)
             throws UserError {
-        if (userService.findByUserId(userRequest.getUserId()) == null)
-            throw new UserError("user not found for update", "403");
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userRequest, userDto);
+        // check for null user and error handling
+        UserDto userDto = userService.findByUserId(userRequest.getUserId());
+        if (userDto == null) throw new UserError("user not found for update", "403");
+
+        //update user on database
+        BeanUtils.copyProperties(userRequest, userDto, "id");
         userDto.setEncryptedPassword(
                 bCryptPasswordEncoder.encode(userRequest.getPassword()));
         UserDto updatedUser = userService.updateUser(userRequest.getUserId(),
                 userDto);
-
         UserResponse returnValue = new UserResponse();
         BeanUtils.copyProperties(updatedUser, returnValue);
 

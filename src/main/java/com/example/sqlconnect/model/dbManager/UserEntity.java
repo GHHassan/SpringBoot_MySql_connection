@@ -1,4 +1,4 @@
-package com.example.sqlconnect.model.entities;
+package com.example.sqlconnect.model.dbManager;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +9,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Entity(name="users")
-public class UserRecord implements Serializable {
+public class UserEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

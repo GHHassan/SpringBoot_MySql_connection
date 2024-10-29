@@ -11,42 +11,36 @@ import org.springframework.security.config.annotation.web.configurers.LogoutConf
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurity {
 
-    // Define SecurityFilterChain to configure HTTP security
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-//            throws Exception {
-//        http.authorizeHttpRequests(
-//                (requests) -> requests.requestMatchers("/", "/users")
-//                        .permitAll()
-//                        .anyRequest().authenticated()).formLogin(
-//                (form) -> form.loginPage("/users").successHandler(
-//                                customAuthenticationSuccessHandler())  // Use custom success handler
-//                        .failureHandler(
-//                                customAuthenticationFailureHandler())  // Use custom failure handler
-//                        .permitAll()).logout(LogoutConfigurer::permitAll);
-//
-//        return http.build();
-//    }
+//    define Security
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+            .csrf(csrf -> csrf // Enable CSRF protection
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // Use cookie-based CSRF token
+            )
+            .authorizeHttpRequests((requests) -> requests
+                    .requestMatchers( "/login", "/index.html").permitAll() //
+                    // Allow access to these endpoints
+                    .anyRequest().authenticated() // Require authentication for other requests
+            )
+            .formLogin(form -> form // Allow everyone to see the login page
+                    .defaultSuccessUrl("/users", true) // Redirect to /home
+                    // after successful login
+                    .failureUrl("/login?error=true") // Redirect to login page with error message
+            )
+            .logout(logout -> logout
+                    .permitAll() // Allow everyone to access the logout functionality
+                    .logoutSuccessUrl("/login?logout=true") // Redirect to login page after logout
+            );
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)  // Disable CSRF protection
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/users").permitAll()  // Allow access to these endpoints
-                        .anyRequest().authenticated()  // Require authentication for other requests
-                )
-                .formLogin(AbstractHttpConfigurer::disable)  // Disable form-based login
-                .httpBasic(AbstractHttpConfigurer::disable)  // Disable HTTP Basic authentication
-                .logout(LogoutConfigurer::permitAll);  // Allow everyone to access the logout functionality
-
-        return http.build();
-    }
+    return http.build();
+}
 
     // Configure AuthenticationManager using AuthenticationConfiguration
     @Bean
