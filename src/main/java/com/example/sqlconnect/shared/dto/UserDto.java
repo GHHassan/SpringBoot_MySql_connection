@@ -14,6 +14,15 @@ public class UserDto extends User implements Serializable {
     private String encryptedPassword;
     private String emailVerification;
     private Boolean emailVerificationStatus = false;
+    private String roles;
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
 
     public long getId() {
         return id;

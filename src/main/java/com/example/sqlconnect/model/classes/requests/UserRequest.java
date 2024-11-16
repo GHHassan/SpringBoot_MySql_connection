@@ -4,7 +4,8 @@ import com.example.sqlconnect.model.classes.User;
 
 public class UserRequest extends User {
 
-    private String userId = null;
+    private String userId;
+
 
     public String getUserId() {
         return userId;

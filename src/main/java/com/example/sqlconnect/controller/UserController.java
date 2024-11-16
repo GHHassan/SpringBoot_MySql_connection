@@ -27,6 +27,8 @@ public class UserController {
 
     /**
      * GET /users/{userId} - Retrieve a specific user by ID
+     * this should be called in this format
+     * baseurl/users/userId // replace userId with actual userId
      */
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse> getUserById(
@@ -65,26 +67,9 @@ public class UserController {
     }
 
     /**
-     * POST /users - Create a new user
-     */
-    @PostMapping
-    public UserResponse createUser(@RequestBody UserRequest userRequest)
-            throws UserError {
-
-        UserDto userDto = new UserDto();
-        BeanUtils.copyProperties(userRequest, userDto);
-        UserDto createdUser = userService.createUser(userDto);
-
-        UserResponse returnValue = new UserResponse();
-        BeanUtils.copyProperties(createdUser, returnValue);
-
-        return returnValue;
-    }
-
-    /**
      * PUT /users/{userId} - Update an existing user
      */
-    @PutMapping()
+    @PutMapping("/update")
     public ResponseEntity<UserResponse> updateUser(
             @RequestBody UserRequest userRequest)
             throws UserError {

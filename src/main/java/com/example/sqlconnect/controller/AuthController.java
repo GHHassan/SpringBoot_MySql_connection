@@ -20,15 +20,25 @@ public class AuthController {
     @Autowired
     UserService userService;
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
+        System.out.println(loginRequest.toString());
         try {
+            System.out.println("loginuser tried");
             // Authenticate the user and get the JWT token
-            String jwt = userService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
+            String jwt = userService.authenticateUser(
+                    loginRequest.getUsername(), loginRequest.getPassword());
+            System.out.println(jwt);
             return ResponseEntity.ok(new LoginResponse(jwt));
         } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid username or password");
         }
+    }
+
+    @GetMapping
+    public String getTest(){
+        return "Getcalled";
     }
 
 }

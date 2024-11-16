@@ -86,9 +86,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public String authenticateUser(String username, String password) {
         UserEntity user = userRepository.findByEmail(username);
-        if(user != null && bCryptPasswordEncoder.matches(password,
-                user.getEncryptedPassword())) {
-            return jwtUtil.generateToken(username);
+        if (user != null && bCryptPasswordEncoder.matches(password, user.getEncryptedPassword())) {
+            // Assuming `getRoles` returns a comma-separated string like "ROLE_USER,ROLE_ADMIN"
+            List<String> roles = List.of(user.getRoles().split(","));
+            return jwtUtil.generateToken(username, roles);
         }
         return "userNotFound";
     }
