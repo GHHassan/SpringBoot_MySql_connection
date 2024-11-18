@@ -22,9 +22,7 @@ public class AuthController {
 
     @PostMapping
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
-        System.out.println(loginRequest.toString());
         try {
-            System.out.println("loginuser tried");
             // Authenticate the user and get the JWT token
             String jwt = userService.authenticateUser(
                     loginRequest.getUsername(), loginRequest.getPassword());

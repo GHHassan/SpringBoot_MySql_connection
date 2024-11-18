@@ -1,6 +1,7 @@
 package com.example.sqlconnect.security;
 
 import com.example.sqlconnect.utils.JwtAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,12 +16,13 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig {
+public class SecurityConfig {
 
+    @Autowired CorsConfig corsConfig;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 
-    public WebSecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
@@ -29,22 +31,23 @@ public class WebSecurityConfig {
          this API.
 
      */
-@Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http
-            .csrf(csrf -> csrf// Enable CSRF protection
-                    .ignoringRequestMatchers("/login", "/signup")
-                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // Use cookie-based CSRF token
-            )
-            .authorizeHttpRequests((requests) -> requests
-                    .requestMatchers( "/login", "signup").permitAll() //
-                    // Allow access to these endpoints
-                    .requestMatchers("/users").hasAuthority("ROLES_USER")
-                    .anyRequest().authenticated() // Require authentication for other requests
-            )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-    return http.build();
-}
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> cors.configurationSource(
+                        corsConfig.corsConfigurationSource())) // Enable CORS
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/login", "/signup")
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/login", "/signup").permitAll()
+                        .requestMatchers("/users").hasAuthority("ROLES_USER")
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
 
     // Configure AuthenticationManager using AuthenticationConfiguration
     @Bean
