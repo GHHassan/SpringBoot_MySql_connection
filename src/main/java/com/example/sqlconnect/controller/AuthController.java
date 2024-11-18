@@ -20,23 +20,24 @@ public class AuthController {
     @Autowired
     UserService userService;
 
+    /*
+        accepts and validates login request which includes username and password
+        matches against database using userService interface.
+
+        more security measures can be added to this method such as tracking
+        the number of times a user tried with wrong credentials
+        or adding 2FA
+     */
     @PostMapping
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             // Authenticate the user and get the JWT token
             String jwt = userService.authenticateUser(
                     loginRequest.getUsername(), loginRequest.getPassword());
-            System.out.println(jwt);
             return ResponseEntity.ok(new LoginResponse(jwt));
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Invalid username or password");
         }
     }
-
-    @GetMapping
-    public String getTest(){
-        return "Getcalled";
-    }
-
 }

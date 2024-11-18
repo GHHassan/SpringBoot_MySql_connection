@@ -83,6 +83,12 @@ public class UserServiceImpl implements UserService {
         return returnedValue;
     }
 
+    /*
+        matches the username and password with the ones on the database if
+        found.
+        then returns a jwt token if matched
+        or returns 'user not found'
+     */
     @Override
     public String authenticateUser(String username, String password) {
         UserEntity user = userRepository.findByEmail(username);

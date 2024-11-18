@@ -4,6 +4,8 @@ import com.example.sqlconnect.utils.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,6 +32,8 @@ public class SecurityConfig {
          This method is used to define the security rules for http request to
          this API.
 
+        corsConfigurationSource defines the cors setting
+        this is at CorsConfig class
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -40,13 +44,31 @@ public class SecurityConfig {
                         .ignoringRequestMatchers("/login", "/signup")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 )
+                // allows login and sign up  endpoint
+                // and restricts other endpoints
+                // allows users endpoint only if the user has a role
+                // ROLES_USER assigned to them
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/login", "/signup").permitAll()
-                        .requestMatchers("/users").hasAuthority("ROLES_USER")
+                        .requestMatchers("/users").hasAuthority("ROLES_USER") // this line can
+                        // be totally removed if the ROLE_USER is the lowest
+                        // on the hierarchy
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
+    }
+
+    /*
+        This bean sets out the heirarchy of the roles that are specified on the
+        database for each user
+        ie. if an endpoint is given access to ROLE_USER ROLE_ADMIN will be
+        automatically gain access to that.
+     */
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        String hierarchy = "ROLE_ADMIN > ROLE_USER";
+        return RoleHierarchyImpl.fromHierarchy(hierarchy);
     }
 
     // Configure AuthenticationManager using AuthenticationConfiguration
